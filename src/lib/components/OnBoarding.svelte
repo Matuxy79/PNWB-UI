@@ -68,15 +68,15 @@
 					<Marquee
 						duration={5000}
 						words={[
-							$i18n.t('Explore the cosmos'),
-							$i18n.t('Unlock mysteries'),
-							$i18n.t('Chart new frontiers'),
-							$i18n.t('Dive into knowledge'),
-							$i18n.t('Discover wonders'),
+							$i18n.t('Matuxies Hydra'),
+							$i18n.t('Unlock the power of words'),
+							$i18n.t('Sart a conversation'),
+							$i18n.t('Introduce yourself to'),
+							$i18n.t('Your Personal AI-Assistant'),
 							$i18n.t('Ignite curiosity'),
-							$i18n.t('Forge new paths'),
-							$i18n.t('Unravel secrets'),
-							$i18n.t('Pioneer insights'),
+							$i18n.t('ASK CASUALLY'),
+							$i18n.t('PLAN EASILY'),
+							$i18n.t('CHANGE YOUR IDEAS'),
 							$i18n.t('Embark on adventures')
 						]}
 					/>
