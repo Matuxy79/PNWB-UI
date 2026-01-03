@@ -3,17 +3,19 @@
 	import { onMount } from 'svelte';
 
 	export let imageUrls = [
-		`${WEBUI_BASE_URL}/assets/images/adam.jpg`,
-		`${WEBUI_BASE_URL}/assets/images/galaxy.jpg`,
-		`${WEBUI_BASE_URL}/assets/images/earth.jpg`,
-		`${WEBUI_BASE_URL}/assets/images/space.jpg`
+		`/assets/images/00intro.png`,
+		`/assets/images/01middle.png`,
+		`/assets/images/02outro.png`,
+		`/assets/images/03forming.png`,
+		`/assets/images/04formed.png`,
+		`/assets/images/05transition.png`
 	];
 	export let duration = 5000;
 	let selectedImageIdx = 0;
 
 	onMount(() => {
 		setInterval(() => {
-			selectedImageIdx = (selectedImageIdx + 1) % (imageUrls.length - 1);
+			selectedImageIdx = (selectedImageIdx + 1) % imageUrls.length;
 		}, duration);
 	});
 </script>
