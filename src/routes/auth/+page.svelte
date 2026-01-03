@@ -36,6 +36,9 @@
 
 	let ldapUsername = '';
 
+	const AUTH_LOGO_URL = `/assets/images/cosmos.png`;
+	const AUTH_BACKGROUND_URL = `/assets/images/hydra.png`;
+
 	const setSessionUser = async (sessionUser, redirectPath: string | null = null) => {
 		if (sessionUser) {
 			console.log(sessionUser);
@@ -130,28 +133,15 @@
 
 	let onboarding = false;
 
-	async function setLogoImage() {
-		await tick();
-		const logo = document.getElementById('logo');
+async function setLogoImage() {
+	await tick();
+	const logo = document.getElementById('logo');
 
-		if (logo) {
-			const isDarkMode = document.documentElement.classList.contains('dark');
-
-			if (isDarkMode) {
-				const darkImage = new Image();
-				darkImage.src = `/static/favicon-dark.png`;
-
-				darkImage.onload = () => {
-					logo.src = `/static/favicon-dark.png`;
-					logo.style.filter = ''; // Ensure no inversion is applied if favicon-dark.png exists
-				};
-
-				darkImage.onerror = () => {
-					logo.style.filter = 'invert(1)'; // Invert image if favicon-dark.png is missing
-				};
-			}
-		}
+	if (logo) {
+		logo.src = AUTH_LOGO_URL;
+		logo.style.filter = '';
 	}
+}
 
 	onMount(async () => {
 		const redirectPath = $page.url.searchParams.get('redirect');
@@ -197,7 +187,11 @@
 />
 
 <div class="w-full h-screen max-h-[100dvh] text-white relative" id="auth-page">
-	<div class="w-full h-full absolute top-0 left-0 bg-white dark:bg-black"></div>
+	<div
+		class="w-full h-full absolute top-0 left-0 bg-cover bg-center bg-no-repeat"
+		style:background-image={`url("${AUTH_BACKGROUND_URL}")`}
+	></div>
+	<div class="w-full h-full absolute top-0 left-0 bg-white/80 dark:bg-black/70"></div>
 
 	<div class="w-full absolute top-0 left-0 right-0 h-8 drag-region" />
 
@@ -229,7 +223,7 @@
 									<img
 										id="logo"
 										crossorigin="anonymous"
-										src="/static/favicon.png"
+										src={AUTH_LOGO_URL}
 										class="size-24 rounded-full"
 										alt=""
 									/>
@@ -245,7 +239,7 @@
 								<div class="mb-1">
 									<div class=" text-2xl font-medium">
 										{#if $config?.onboarding ?? false}
-											{$i18n.t(`Get started with {{WEBUI_NAME}}`, { WEBUI_NAME: $WEBUI_NAME })}
+											{$i18n.t('Start your cosmos')}
 										{:else if mode === 'ldap'}
 											{$i18n.t(`Sign in to {{WEBUI_NAME}} with LDAP`, { WEBUI_NAME: $WEBUI_NAME })}
 										{:else if mode === 'signin'}
@@ -255,14 +249,13 @@
 										{/if}
 									</div>
 
-									{#if $config?.onboarding ?? false}
-										<div class="mt-1 text-xs font-medium text-gray-600 dark:text-gray-500">
-											ⓘ {$WEBUI_NAME}
-											{$i18n.t(
-												'does not make any external connections, and your data stays securely on your locally hosted server.'
-											)}
-										</div>
-									{/if}
+															{#if $config?.onboarding ?? false}
+							<div class="mt-1 text-xs font-medium text-gray-600 dark:text-gray-500">
+								{$i18n.t(
+									"We don't store or collect data. Your history lives and dies locally on your device."
+								)}
+							</div>
+						{/if}
 								</div>
 
 								{#if $config?.features.enable_login_form || $config?.features.enable_ldap || form}
@@ -568,14 +561,14 @@
 			</div>
 		</div>
 
-		{#if !$config?.metadata?.auth_logo_position}
+						{#if !$config?.metadata?.auth_logo_position}
 			<div class="fixed m-10 z-50">
 				<div class="flex space-x-2">
 					<div class=" self-center">
 						<img
 							id="logo"
 							crossorigin="anonymous"
-							src="/static/favicon.png"
+							src={AUTH_LOGO_URL}
 							class=" w-6 rounded-full"
 							alt=""
 						/>
@@ -585,3 +578,4 @@
 		{/if}
 	{/if}
 </div>
+
