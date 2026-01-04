@@ -1,9 +1,24 @@
+# syntax=docker/dockerfile:1
+
+######## Frontend build ########
+FROM node:22-alpine3.20 AS ui-build
+WORKDIR /app
+
+# Install deps
+COPY package.json package-lock.json ./
+RUN npm ci --legacy-peer-deps
+
+# Build UI
+COPY . .
+RUN npm run build
+
+######## Runtime ########
 FROM ghcr.io/open-webui/open-webui:main
+
+# Overlay our built frontend and static assets
+COPY --from=ui-build /app/build /app/build
+COPY --from=ui-build /app/static /app/static
+COPY --from=ui-build /app/backend/open_webui/static /app/backend/open_webui/static
+
 EXPOSE 8080
-# Optional branding overrides (keep/remove as needed):
-# COPY branding/logo.png              /app/backend/open_webui/static/logo.png
-# COPY branding/favicon.png           /app/backend/open_webui/static/favicon.png
-# COPY branding/apple-touch-icon.png  /app/backend/open_webui/static/apple-touch-icon.png
-# COPY branding/logo.png              /app/static/static/logo.png
-# COPY branding/favicon.png           /app/static/static/favicon.png
-# COPY branding/apple-touch-icon.png  /app/static/static/apple-touch-icon.png
+CMD ["bash", "start.sh"]
