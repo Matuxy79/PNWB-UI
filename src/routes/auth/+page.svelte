@@ -37,6 +37,8 @@ import { redirect } from '@sveltejs/kit';
 
 	let ldapUsername = '';
 
+	const BRAND_NAME = 'Cosmos';
+
 	const AUTH_LOGO_URL = `/assets/images/cosmos.png`;
 	const AUTH_BACKGROUND_URL = `/assets/images/hydra.png`;
 
@@ -248,13 +250,13 @@ async function setLogoImage() {
 								<div class="mb-1">
 									<div class=" text-2xl font-medium">
 										{#if $config?.onboarding ?? false}
-											{$i18n.t('Start your cosmos')}
+											{`Welcome to ${BRAND_NAME}`}
 										{:else if mode === 'ldap'}
-											{$i18n.t(`Sign in to {{WEBUI_NAME}} with LDAP`, { WEBUI_NAME: $WEBUI_NAME })}
+											{`Sign in to ${BRAND_NAME} with LDAP`}
 										{:else if mode === 'signin'}
-											{$i18n.t(`Sign in to {{WEBUI_NAME}}`, { WEBUI_NAME: $WEBUI_NAME })}
+											{`Sign in to ${BRAND_NAME}`}
 										{:else}
-											{$i18n.t(`Sign up to {{WEBUI_NAME}}`, { WEBUI_NAME: $WEBUI_NAME })}
+											{`Sign up to ${BRAND_NAME}`}
 										{/if}
 									</div>
 
@@ -372,24 +374,24 @@ async function setLogoImage() {
 												type="submit"
 											>
 												{mode === 'signin'
-													? $i18n.t('Sign in')
+													? 'Enter Cosmos'
 													: ($config?.onboarding ?? false)
 														? $i18n.t('Create Admin Account')
-														: $i18n.t('Create Account')}
+														: 'Create Cosmos Account'}
 											</button>
 
 											{#if !($config?.onboarding ?? false)}
 												<div class=" mt-4 text-sm text-center">
 													{mode === 'signin'
-														? $i18n.t("Don't have an account?")
-														: $i18n.t('Already have an account?')}
+														? 'New here?'
+														: 'Already with us?'}
 
 													<button
 														class=" font-medium underline"
 														type="button"
 														on:click={toggleAuthMode}
 													>
-														{mode === 'signin' ? $i18n.t('Sign up') : $i18n.t('Sign in')}
+														{mode === 'signin' ? 'Join Cosmos' : 'Back to sign in'}
 													</button>
 												</div>
 											{/if}
@@ -589,4 +591,3 @@ async function setLogoImage() {
 		{/if}
 	{/if}
 </div>
-
