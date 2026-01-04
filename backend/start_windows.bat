@@ -6,6 +6,11 @@ SETLOCAL ENABLEDELAYEDEXPANSION
 SET "SCRIPT_DIR=%~dp0"
 cd /d "%SCRIPT_DIR%" || exit /b
 
+:: Ensure data directory exists for sqlite database
+IF NOT EXIST "data" (
+    mkdir "data"
+)
+
 :: Add conditional Playwright browser installation
 IF /I "%WEB_LOADER_ENGINE%" == "playwright" (
     IF "%PLAYWRIGHT_WS_URL%" == "" (
@@ -34,13 +39,15 @@ IF "%WEBUI_SECRET_KEY% %WEBUI_JWT_SECRET_KEY%" == " " (
     IF NOT EXIST "%KEY_FILE%" (
         echo Generating WEBUI_SECRET_KEY
         :: Generate a random value to use as a WEBUI_SECRET_KEY in case the user didn't provide one
-        SET /p WEBUI_SECRET_KEY=<nul
-        FOR /L %%i IN (1,1,12) DO SET /p WEBUI_SECRET_KEY=<!random!>>%KEY_FILE%
+        python -c "import secrets; print(secrets.token_urlsafe(32))" > "%KEY_FILE%" 2>nul
+        IF ERRORLEVEL 1 (
+            powershell -NoProfile -Command "[Convert]::ToBase64String([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(32))" | Out-File -Encoding ASCII -NoNewline "%KEY_FILE%"
+        )
         echo WEBUI_SECRET_KEY generated
     )
 
     echo Loading WEBUI_SECRET_KEY from %KEY_FILE%
-    SET /p WEBUI_SECRET_KEY=<%KEY_FILE%
+    for /f "usebackq delims=" %%A in ("%KEY_FILE%") do set "WEBUI_SECRET_KEY=%%A"
 )
 
 :: Execute uvicorn

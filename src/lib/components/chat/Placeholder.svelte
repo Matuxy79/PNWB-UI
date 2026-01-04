@@ -58,16 +58,25 @@
 	export let onSelect = (e) => {};
 	export let onChange = (e) => {};
 
-	export let toolServers = [];
+export let toolServers = [];
 
-	let models = [];
-	let selectedModelIdx = 0;
+let models = [];
+let selectedModelIdx = 0;
 
-	$: if (selectedModels.length > 0) {
-		selectedModelIdx = models.length - 1;
+$: if (selectedModels.length > 0) {
+	selectedModelIdx = models.length - 1;
+}
+
+$: models = selectedModels.map((id) => $_models.find((m) => m.id === id));
+
+const handleModelImageError = (event: Event) => {
+	const target = event.currentTarget as HTMLImageElement | null;
+	if (target) {
+		target.onerror = null;
+		target.src = '/assets/images/cosmos.png';
 	}
+};
 
-	$: models = selectedModels.map((id) => $_models.find((m) => m.id === id));
 </script>
 
 <div class="m-auto w-full max-w-6xl px-2 @2xl:px-20 translate-y-6 py-24 text-center">
@@ -125,6 +134,7 @@
 											src={`${WEBUI_API_BASE_URL}/models/model/profile/image?id=${model?.id}&lang=${$i18n.language}`}
 											class=" size-9 @sm:size-10 rounded-full border-[1px] border-gray-100 dark:border-none"
 											aria-hidden="true"
+											on:error={handleModelImageError}
 											draggable="false"
 										/>
 									</button>

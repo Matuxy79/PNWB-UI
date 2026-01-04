@@ -16,10 +16,11 @@
 
 	import { generateInitialsImage, canvasPixelTest } from '$lib/utils';
 
-	import Spinner from '$lib/components/common/Spinner.svelte';
-	import OnBoarding from '$lib/components/OnBoarding.svelte';
-	import SensitiveInput from '$lib/components/common/SensitiveInput.svelte';
-	import { redirect } from '@sveltejs/kit';
+import Spinner from '$lib/components/common/Spinner.svelte';
+import OnBoarding from '$lib/components/OnBoarding.svelte';
+import BackToLandingButton from '$lib/components/auth/BackToLandingButton.svelte';
+import SensitiveInput from '$lib/components/common/SensitiveInput.svelte';
+import { redirect } from '@sveltejs/kit';
 
 	const i18n = getContext('i18n');
 
@@ -102,6 +103,14 @@
 		} else {
 			await signUpHandler();
 		}
+	};
+
+	const toggleAuthMode = () => {
+		if (mode === 'ldap') {
+			mode = 'signin';
+			return;
+		}
+		mode = mode === 'signin' ? 'signup' : 'signin';
 	};
 
 	const oauthCallbackHandler = async () => {
@@ -369,7 +378,7 @@ async function setLogoImage() {
 														: $i18n.t('Create Account')}
 											</button>
 
-											{#if $config?.features.enable_signup && !($config?.onboarding ?? false)}
+											{#if !($config?.onboarding ?? false)}
 												<div class=" mt-4 text-sm text-center">
 													{mode === 'signin'
 														? $i18n.t("Don't have an account?")
@@ -378,13 +387,7 @@ async function setLogoImage() {
 													<button
 														class=" font-medium underline"
 														type="button"
-														on:click={() => {
-															if (mode === 'signin') {
-																mode = 'signup';
-															} else {
-																mode = 'signin';
-															}
-														}}
+														on:click={toggleAuthMode}
 													>
 														{mode === 'signin' ? $i18n.t('Sign up') : $i18n.t('Sign in')}
 													</button>
@@ -556,6 +559,14 @@ async function setLogoImage() {
 								</div>
 							</div>
 						{/if}
+
+						<div class="flex justify-center">
+							<BackToLandingButton
+								onBack={() => {
+									onboarding = true;
+								}}
+							/>
+						</div>
 					</div>
 				{/if}
 			</div>
